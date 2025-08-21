@@ -369,6 +369,21 @@
     <ul id="cart-items"></ul>
     <div id="cart-total">Total: $0.00</div>
     <button onclick="clearCart()" style="background:#d35400; color:#fff; border:none; padding:10px; border-radius:5px; cursor:pointer; width:100%; font-weight:bold; margin-top:10px;">Clear Cart</button>
+  
+    <!-- Checkout Button -->
+    <form id="checkout-form" method="POST" action="https://sandbox.globalpay.com/checkout"
+          style="margin-top:10px; text-align:center;">
+      <input type="hidden" name="merchant_id" value="YOUR_MERCHANT_ID">
+      <input type="hidden" name="order_id" value="ORDER123">
+      <input type="hidden" name="currency" value="CAD">
+      <input type="hidden" name="amount" id="checkout-amount" value="">
+      <button type="submit" 
+              style="background:#27ae60; color:#fff; border:none; padding:10px; 
+                     border-radius:5px; cursor:pointer; width:100%; font-weight:bold;">
+        Checkout & Pay
+      </button>
+    </form>
+
   </div>
 
   <footer>
@@ -549,6 +564,15 @@
     }
 
     setInterval(showNextReview, 8000);
+  
+
+// Update checkout amount before submitting form
+document.getElementById("checkout-form").addEventListener("submit", function() {
+  let total = 0;
+  cart.forEach(item => total += item.price * item.qty);
+  document.getElementById("checkout-amount").value = total.toFixed(2);
+});
+
   </script>
 </body>
 </html>
