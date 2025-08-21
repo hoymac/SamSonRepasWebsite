@@ -3,34 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Payment Confirmation - SamSonRepas</title>
+  <title>Payment Response - SamSonRepas</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0; padding: 0;
       background: #fdfdfd;
-      color: #333;
     }
     header {
       background: #d35400;
       color: white;
       padding: 20px;
       text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-      font-weight: bold;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    header img.logo {
-      height: 50px;
-      vertical-align: middle;
-      margin-left: 15px;
     }
     nav {
       background: #f39c12;
@@ -42,127 +26,94 @@
       color: white;
       text-decoration: none;
       font-weight: bold;
-      font-size: 1.1rem;
-      cursor: pointer;
     }
     nav a:hover {
       text-decoration: underline;
     }
     section {
-      padding: 40px 20px;
-      max-width: 900px;
-      margin: auto;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
       text-align: center;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    h2 {
-      color: #d35400;
-      margin-bottom: 20px;
+    h2.success {
+      color: #27ae60;
       font-size: 2rem;
     }
-    .success-msg {
-      background: #eafaf1;
-      border: 2px solid #27ae60;
-      border-radius: 10px;
-      padding: 30px 20px;
-      margin-bottom: 30px;
-      box-shadow: 0 0 10px rgba(39, 174, 96, 0.2);
-      color: #27ae60;
+    h2.failure {
+      color: #e74c3c;
+      font-size: 2rem;
+    }
+    p {
       font-size: 1.2rem;
+      margin: 15px 0;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    table th, table td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    table th {
-      background: #f39c12;
-      color: white;
-    }
-    .thank-you {
-      font-size: 1.1rem;
+    a.button {
+      display: inline-block;
       margin-top: 20px;
+      padding: 10px 20px;
+      background: #d35400;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+    a.button:hover {
+      background: #b03e00;
     }
     footer {
       background: #d35400;
       color: white;
       text-align: center;
-      padding: 15px 10px;
+      padding: 15px;
       margin-top: 40px;
-      font-weight: bold;
-    }
-    @media (max-width: 600px) {
-      nav a {
-        display: block;
-        margin: 10px 0;
-      }
-      table th, table td {
-        font-size: 0.9rem;
-        padding: 8px;
-      }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>SamSonRepas</h1>
-    <img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="Logo" class="logo" />
   </header>
 
   <nav>
-    <a href="index.html#home">Home</a>
+    <a href="index.html">Home</a>
     <a href="index.html#menu">Menu</a>
     <a href="index.html#contact">Contact Us</a>
     <a href="index.html#policies">Terms & Policies</a>
   </nav>
 
-  <section>
-    <h2>Payment Successful!</h2>
-    <div class="success-msg">
-      Thank you for your order. Your payment has been successfully processed.
-    </div>
-
-    <h3>Order Summary</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Quantity</th>
-          <th>Price</th>
-        </tr>
-      </thead>
-      <tbody id="order-summary">
-        <!-- Sample items, can be dynamically updated if connected to payment gateway -->
-        <tr>
-          <td>Jollof Rice with Chicken</td>
-          <td>2</td>
-          <td>$33.00</td>
-        </tr>
-        <tr>
-          <td>Fanta</td>
-          <td>2</td>
-          <td>$5.00</td>
-        </tr>
-        <tr>
-          <td><strong>Total</strong></td>
-          <td></td>
-          <td><strong>$38.00</strong></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="thank-you">
-      We are preparing your order and will notify you once it is ready for pickup or delivery.  
-      Thank you for choosing SamSonRepas!
-    </p>
+  <section id="response-message">
+    <!-- Message will be injected here by JS -->
   </section>
 
   <footer>
     &copy; 2025 SamSonRepas. All rights reserved.
   </footer>
+
+  <script>
+    // Parse URL parameters (e.g., ?status=success&order_id=123)
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get("status"); // Gateway should send "success" or "failed"
+    const orderId = urlParams.get("order_id");
+
+    const container = document.getElementById("response-message");
+
+    if (status === "success") {
+      container.innerHTML = `
+        <h2 class="success">✅ Payment Successful!</h2>
+        <p>Thank you for your order${orderId ? " #" + orderId : ""}. A confirmation email has been sent to you.</p>
+        <a href="index.html" class="button">Return to Home</a>
+      `;
+    } else {
+      container.innerHTML = `
+        <h2 class="failure">❌ Payment Failed</h2>
+        <p>Unfortunately, your payment could not be processed. Please try again or contact support.</p>
+        <a href="index.html#menu" class="button">Try Again</a>
+      `;
+    }
+  </script>
 </body>
 </html>
